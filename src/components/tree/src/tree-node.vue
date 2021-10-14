@@ -74,21 +74,9 @@
         >
         </el-tree-node>
         <div v-if="node.data.type == 'rule'">
-          <ruleComp :node="node"  @updateRuleCompLeftValue="updateRuleCompLeftValue"/>
+          <node-rule :node="node"/>
         </div>
-        <el-select
-          class="tree-relation-input"
-          placeholder="关系"
-          v-model="relation"
-        >
-          <el-option
-            v-for="(val, key) in next_group"
-            :key="key"
-            :label="val"
-            :value="key"
-          >
-          </el-option>
-        </el-select>
+        <node-relation :node="node"/>
       </div>
     </el-collapse-transition>
   </div>
@@ -100,10 +88,6 @@ import ElCheckbox from "element-ui/packages/checkbox";
 import emitter from "element-ui/src/mixins/emitter";
 import ElTreeNode from "./tree-node.vue";
 import { getNodeKey } from "./model/util";
-import ruleComp from './ruleComp'
-
-// 导入 树结构条件 判断值
-import { operatorMap, next_condition, next_group } from "./model/ruleData";
 
 export default {
   name: "ElTreeNode",
@@ -131,7 +115,6 @@ export default {
   },
 
   components: {
-    ruleComp,
     ElTreeNode,
     ElCollapseTransition,
     ElCheckbox,
@@ -153,14 +136,58 @@ export default {
             data,
             store,
           })
-        ) : tree.$scopedSlots.default ? (
-          tree.$scopedSlots.default({ node, data })
+        ) : tree.$scopedSlots.control ? (
+          tree.$scopedSlots.control({ node, data })
         ) : (
           <span class="el-tree-node__label">{node.label}</span>
         );
       },
     },
+    NodeRule: {
+      props: {
+        node: {
+          required: true,
+        },
+      },
+      render(h) {
+        const parent = this.$parent;
+        const tree = parent.tree;
+        const node = this.node;
+        const { data, store } = node;
+        return parent.renderContent ? (
+          parent.renderContent.call(parent._renderProxy, h, {
+            _self: tree.$vnode.context,
+            node,
+            data,
+            store,
+          })
+        ) : tree.$scopedSlots.rule({ node, data });
+      },
+    },
+    NodeRelation: {
+      props: {
+        node: {
+          required: true,
+        },
+      },
+      render(h) {
+        const parent = this.$parent;
+        const tree = parent.tree;
+        const node = this.node;
+        const { data, store } = node;
+        return parent.renderContent ? (
+          parent.renderContent.call(parent._renderProxy, h, {
+            _self: tree.$vnode.context,
+            node,
+            data,
+            store,
+          })
+        ) : tree.$scopedSlots.relation({ node, data });
+      },
+    }
   },
+
+  mounted() {},
 
   data() {
     return {
@@ -169,11 +196,6 @@ export default {
       childNodeRendered: false,
       oldChecked: null,
       oldIndeterminate: null,
-
-      operatorMap: [],
-      next_condition: [],
-      next_group: [],
-      relation: "",
     };
   },
 
@@ -295,10 +317,6 @@ export default {
       if (!this.tree.draggable) return;
       this.tree.$emit("tree-node-drag-end", event, this);
     },
-
-    updateRuleCompLeftValue(v) {
-      console.log(v, 'v-------')
-    }
   },
 
   created() {
@@ -334,10 +352,6 @@ export default {
         }
       });
     }
-
-    this.operatorMap = operatorMap;
-    this.next_condition = next_condition;
-    this.next_group = next_group;
   },
 };
 </script>

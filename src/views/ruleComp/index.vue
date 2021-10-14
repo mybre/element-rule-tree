@@ -1,6 +1,6 @@
 <template>
   <div class="rule-comp">
-    <div style="width:100px">
+    <div style="word-wrap:break-word">
       {{ node.data }}
     </div>
     <el-row :gutter="20">

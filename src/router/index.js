@@ -10,14 +10,6 @@ const routes = [
     name: 'renderContent',
     component: renderContent
   },
-  {
-    path: '/scopedSlot',
-    name: 'scopedSlot',
-    // route level code-splitting
-    // this generates a separate chunk (scopedSlot.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "scopedSlot" */ '../views/scopedSlot.vue')
-  }
 ]
 
 const router = new VueRouter({

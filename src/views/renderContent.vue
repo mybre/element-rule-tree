@@ -44,13 +44,18 @@
           :data="data"
           node-key="id"
           default-expand-all
+          :indent="10"
           :filter-node-method="filterNode"
           :expand-on-click-node="false"
           @node-click="handleNodeClick"
         >
-          <span class="custom-tree-node" slot-scope="{ node, data }">
+          <div
+            class="custom-tree-node"
+            slot="control"
+            slot-scope="{ node, data }"
+          >
             <span>{{ node.label }}</span>
-            <span v-if="data.children">
+            <span v-if="data.type == 'group'">
               <el-button-group>
                 <el-button
                   size="mini"
@@ -80,16 +85,48 @@
                 @click="() => remove(node, data)"
               ></el-button>
             </span>
-          </span>
+          </div>
+          <div slot="rule" slot-scope="{ node, data }">
+            <ruleComp
+              :node="node"
+              @updateRuleCompLeftValue="
+                updateRuleCompLeftValue(node, data, $event)
+              "
+              @updateRuleCompCenterValue="
+                updateRuleCompCenterValue(node, data, $event)
+              "
+              @updateRuleCompRightValue="
+                updateRuleCompLeRightlue(node, data, $event)
+              "
+            />
+          </div>
+          <div slot="relation" slot-scope="{ node, data }">
+            <el-select
+              class="tree-relation-input"
+              placeholder="关系"
+              v-model="data.relation"
+            >
+              <div v-if="data.nextIsGroup">
+                <el-option
+                  v-for="(val, key) in next_group"
+                  :key="key"
+                  :label="val"
+                  :value="key"
+                >
+                </el-option>
+              </div>
+              <div v-else>
+                <el-option
+                  v-for="(val, key) in next_condition"
+                  :key="key"
+                  :label="val"
+                  :value="key"
+                >
+                </el-option>
+              </div>
+            </el-select>
+          </div>
         </tree>
-
-        <div class="buttons">
-          <el-button @click="getCheckedNodes">通过 node 获取</el-button>
-          <el-button @click="getCheckedKeys">通过 key 获取</el-button>
-          <el-button @click="setCheckedNodes">通过 node 设置</el-button>
-          <el-button @click="setCheckedKeys">通过 key 设置</el-button>
-          <el-button @click="resetChecked">清空</el-button>
-        </div>
       </div>
     </div>
   </div>
@@ -98,8 +135,14 @@
 <script>
 let id = 1000;
 import tree from "../components/tree";
-import { _list, _sceneMap } from "../components/tree/src/model/ruleData";
-console.log(_sceneMap, "_sceneMap");
+import {
+  _list,
+  _sceneMap,
+  next_group,
+  next_condition,
+  operatorMap,
+} from "./ruleData";
+import ruleComp from "./ruleComp";
 export default {
   data() {
     const data = [
@@ -107,6 +150,7 @@ export default {
         id: 1,
         label: "一级 1",
         type: "group",
+        nextIsGroup: true,
         children: [
           {
             id: 4,
@@ -128,6 +172,8 @@ export default {
                 id: 10,
                 type: "rule",
                 label: "三级 1-1-2",
+                relation: "",
+                value: "",
               },
             ],
           },
@@ -142,11 +188,13 @@ export default {
             id: 5,
             type: "rule",
             label: "二级 2-1",
+            value:""
           },
           {
             id: 6,
             type: "rule",
             label: "二级 2-2",
+            value:""
           },
         ],
       },
@@ -159,11 +207,13 @@ export default {
             id: 7,
             type: "rule",
             label: "二级 3-1",
+            value:""
           },
           {
             id: 8,
             type: "rule",
             label: "二级 3-2",
+            value:""
           },
         ],
       },
@@ -173,6 +223,8 @@ export default {
       isExpand: false,
       sceneMap: [],
       sceneType: "",
+      next_group: [],
+      next_condition: [],
       data: JSON.parse(JSON.stringify(data)),
     };
   },
@@ -182,6 +234,7 @@ export default {
     },
   },
   components: {
+    ruleComp,
     tree,
   },
   watch: {
@@ -191,6 +244,8 @@ export default {
   },
   mounted() {
     this.sceneMap = _sceneMap;
+    this.next_group = next_group;
+    this.next_condition = next_condition;
   },
 
   methods: {
@@ -260,29 +315,14 @@ export default {
       }
     },
 
-    getCheckedNodes() {
-      console.log(this.$refs.tree.getCheckedNodes());
+    updateRuleCompLeftValue(node, data, $event) {
+      data.value = $event;
     },
-    getCheckedKeys() {
-      console.log(this.$refs.tree.getCheckedKeys());
+    updateRuleCompCenterValue(node, data, $event) {
+      data.value = $event;
     },
-    setCheckedNodes() {
-      this.$refs.tree.setCheckedNodes([
-        {
-          id: 5,
-          label: "二级 2-1",
-        },
-        {
-          id: 9,
-          label: "三级 1-1-1",
-        },
-      ]);
-    },
-    setCheckedKeys() {
-      this.$refs.tree.setCheckedKeys([3]);
-    },
-    resetChecked() {
-      this.$refs.tree.setCheckedKeys([]);
+    updateRuleCompLeRightlue(node, data, $event) {
+      data.value = $event;
     },
   },
 };
@@ -311,23 +351,23 @@ export default {
 .custom-tree-container /deep/ .tree-card {
   border-radius: 4px;
   border: 1px solid #d9d9d9;
-  box-shadow: 9px 2px 12px 1px #d3d3d3;
+  box-shadow: 2px 2px 8px 1px #d3d3d3;
   background-color: #fff;
   overflow: hidden;
   color: #303133;
   transition: 0.3s;
 }
 .custom-tree-container /deep/ .group {
-  border-left: 4px solid #199dff;
-  padding:10px;
+  border-left: 6px solid #199dff;
+  padding: 10px;
 }
 
 .custom-tree-container /deep/ .rule {
-  border-left: 4px solid #64ff08 !important;
-  padding:10px;
+  border-left: 6px solid #64ff08 !important;
+  padding: 10px;
 }
 
 .custom-tree-container /deep/ .rule-comp {
-  padding: 10px;
+  padding: 10px 0;
 }
 </style>
