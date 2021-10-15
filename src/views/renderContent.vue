@@ -92,31 +92,29 @@
               ></el-button>
             </span>
           </div>
-          <div slot="rule" slot-scope="{ node: nodeCur, data: dataCur }">
-            <ruleComp
+          <div slot="condition" slot-scope="{ node: nodeCur, data: dataCur }">
+            <condition
               :node="nodeCur"
-              @updateRuleCompLeftValue="
-                updateRuleCompLeftValue(nodeCur, dataCur, $event)
+              @updateConditionLeftValue="
+                updateConditionLeftValue(nodeCur, dataCur, $event)
               "
-              @updateRuleCompCenterValue="
-                updateRuleCompCenterValue(nodeCur, dataCur, $event)
+              @updateConditionOperateValue="
+                updateConditionOperateValue(nodeCur, dataCur, $event)
               "
-              @updateRuleCompRightValue="
-                updateRuleCompLeRightlue(nodeCur, dataCur, $event)
+              @updateConditionRightValue="
+                updateConditionRightValue(nodeCur, dataCur, $event)
               "
             />
           </div>
           <div slot="relation" slot-scope="{ node: nodeCur, data: dataCur }">
-            <div>next_group: {{ dataCur.next_group }}</div>
-            <div>next_condition: {{ dataCur.next_condition }}</div>
+            <div>next_group: {{ dataCur.nextIsGroup }}</div>
             <el-select
-              v-if="dataCur.next_group || dataCur.next_condition"
               class="tree-relation-input"
               placeholder="关系"
               v-model="dataCur.relation"
               @change="changeRelation"
             >
-              <div v-if="dataCur.next_group">
+              <div v-if="dataCur.nextIsGroup">
                 <el-option
                   v-for="(val, key) in next_group"
                   :key="key"
@@ -154,7 +152,7 @@ import {
   next_condition,
   operatorMap,
 } from "./ruleData";
-import ruleComp from "./ruleComp";
+import condition from "./condition";
 export default {
   data() {
     const data = [
@@ -162,7 +160,6 @@ export default {
         id: 1,
         label: "一级 1",
         type: "group",
-        nextIsGroupFn: true,
         children: [
           {
             id: 4,
@@ -171,25 +168,24 @@ export default {
             children: [
               {
                 id: 9,
-                type: "rule",
+                type: "condition",
                 label: "三级 1-1-1",
                 relation: "",
                 pId: "0",
                 seq: "1",
                 field: "input",
                 operator: "",
-                leftValue: "",
-                rightValue: "",
-                centerValue: "",
+                value: "",
+                operator: "",
               },
               {
                 id: 10,
-                type: "rule",
+                type: "condition",
                 label: "三级 1-1-2",
                 relation: "",
-                leftValue: "",
-                rightValue: "",
-                centerValue: "",
+                field: "",
+                value: "",
+                operator: "",
               },
             ],
           },
@@ -202,20 +198,20 @@ export default {
         children: [
           {
             id: 5,
-            type: "rule",
+            type: "condition",
             label: "二级 2-1",
-            leftValue: "",
-            rightValue: "",
-            centerValue: "",
+            field: "",
+            value: "",
+            operator: "",
             relation: "",
           },
           {
             id: 6,
-            type: "rule",
+            type: "condition",
             label: "二级 2-2",
-            leftValue: "",
-            rightValue: "",
-            centerValue: "",
+            field: "",
+            value: "",
+            operator: "",
             relation: "",
           },
         ],
@@ -227,20 +223,20 @@ export default {
         children: [
           {
             id: 7,
-            type: "rule",
+            type: "condition",
             label: "二级 3-1",
-            leftValue: "",
-            rightValue: "",
-            centerValue: "",
+            field: "",
+            value: "",
+            operator: "",
             relation: "",
           },
           {
             id: 8,
-            type: "rule",
+            type: "condition",
             label: "二级 3-2",
-            leftValue: "",
-            rightValue: "",
-            centerValue: "",
+            field: "",
+            value: "",
+            operator: "",
             relation: "",
           },
         ],
@@ -262,7 +258,7 @@ export default {
     },
   },
   components: {
-    ruleComp,
+    condition,
     tree,
   },
   watch: {
@@ -284,8 +280,7 @@ export default {
         children: [],
         type: "group",
         relation: "",
-        next_group: false,
-        next_condition: false,
+        nextIsGroup: false,
         isNew: true,
       };
 
@@ -305,13 +300,12 @@ export default {
       const newChild = {
         id: id++,
         label: `条件 ${id}`,
-        type: "rule",
-        leftValue: "",
-        rightValue: "",
-        centerValue: "",
+        type: "condition",
+        field: "",
+        value: "",
+        operator: "",
         relation: "",
-        next_group: false,
-        next_condition: false,
+        nextIsGroup: false,
         isNew: true,
       };
       if (type && type == "isRoot") {
@@ -326,16 +320,13 @@ export default {
     // 处理当前组内每个块与下个块之间的关系
     handleNodeIsGroup(data) {
       if (data.length >= 1) {
-        this.$set(data[data.length - 1], "next_group", false);
-        this.$set(data[data.length - 1], "next_condition", false);
+        this.$set(data[data.length - 1], "nextIsGroup", false);
       }
       for (let i = 0; i < data.length - 1; ++i) {
         if (data[i + 1].type == "group") {
-          this.$set(data[i], "next_group", true);
-          this.$set(data[i], "next_condition", false);
+          this.$set(data[i], "nextIsGroup", true);
         } else {
-          this.$set(data[i], "next_group", false);
-          this.$set(data[i], "next_condition", true);
+          this.$set(data[i], "nextIsGroup", false);
         }
       }
     },
@@ -379,14 +370,14 @@ export default {
       }
     },
 
-    updateRuleCompLeftValue(node, data, $event) {
-      data.leftValue = $event;
+    updateConditionLeftValue(node, data, $event) {
+      data.field = $event;
     },
-    updateRuleCompCenterValue(node, data, $event) {
-      data.centerValue = $event;
+    updateConditionOperateValue(node, data, $event) {
+      data.operator = $event;
     },
-    updateRuleCompLeRightlue(node, data, $event) {
-      data.rightValue = $event;
+    updateConditionRightValue(node, data, $event) {
+      data.value = $event;
     },
 
     changeRelation(value) {
@@ -430,12 +421,12 @@ export default {
   padding: 10px;
 }
 
-.custom-tree-container /deep/ .rule {
+.custom-tree-container /deep/ .condition {
   border-left: 6px solid #64ff08 !important;
   padding: 10px;
 }
 
-.custom-tree-container /deep/ .rule-comp {
+.custom-tree-container /deep/ .condition-comp {
   padding: 10px 0;
 }
 

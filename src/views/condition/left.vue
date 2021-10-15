@@ -1,13 +1,14 @@
 <template>
   <div>
-    <el-input v-model="value" />
+    <left-input v-if="node.data.field == 'input'" />
   </div>
 </template>
 
 <script>
+import LeftInput from "./components/left/left-input.vue";
 export default {
-  name: "ruleCompLeft",
-  componentName: "ruleCompLeft",
+  name: "conditionLeft",
+  componentName: "conditionLeft",
 
   props: {
     node: {
@@ -16,9 +17,12 @@ export default {
       },
     },
   },
+  components: {
+    LeftInput
+  },
   watch: {
     value(v) {
-      this.$emit('updateRuleCompLeftValue', v);
+      this.$emit('updateConditionLeftValue', v);
     }
   },
   data() {

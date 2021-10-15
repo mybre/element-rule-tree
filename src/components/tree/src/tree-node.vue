@@ -11,7 +11,7 @@
       'is-focusable': !node.disabled,
       'is-checked': !node.disabled && node.checked,
       group: node.data.type == 'group',
-      rule: node.data.type == 'rule',
+      condition: node.data.type == 'condition',
       'tree-blink': node.data.isNew
     }"
     role="treeitem"
@@ -74,8 +74,8 @@
           @node-expand="handleChildNodeExpand"
         >
         </el-tree-node>
-        <div v-if="node.data.type == 'rule'">
-          <node-rule :node="node"/>
+        <div v-if="node.data.type == 'condition'">
+          <node-condition :node="node"/>
         </div>
         <node-relation :node="node"/>
       </div>
@@ -144,7 +144,7 @@ export default {
         );
       },
     },
-    NodeRule: {
+    NodeCondition: {
       props: {
         node: {
           required: true,
@@ -162,7 +162,7 @@ export default {
             data,
             store,
           })
-        ) : tree.$scopedSlots.rule({ node, data });
+        ) : tree.$scopedSlots.condition({ node, data });
       },
     },
     NodeRelation: {
