@@ -29,6 +29,7 @@
                 class="scene input"
                 placeholder="业务场景"
                 v-model="sceneType"
+                @change="changeSceneType"
               >
                 <el-option
                   v-for="(val, key) in sceneMap"
@@ -60,7 +61,7 @@
             slot="control"
             slot-scope="{ node: nodeCur, data: dataCur }"
           >
-            <span>{{ nodeCur.label }}</span>
+            <span>{{ nodeCur.data.field }}</span>
             <span v-if="dataCur.type == 'group'">
               <el-button-group>
                 <el-button
@@ -95,6 +96,7 @@
           <div slot="condition" slot-scope="{ node: nodeCur, data: dataCur }">
             <condition
               :node="nodeCur"
+              :curSceneFields="curSceneFields"
               @updateConditionLeftValue="
                 updateConditionLeftValue(nodeCur, dataCur, $event)
               "
@@ -151,111 +153,20 @@ import {
   next_group,
   next_condition,
   operatorMap,
+  treeData,
 } from "./ruleData";
 import condition from "./condition";
 export default {
   data() {
-    const data = [
-      {
-        id: 1,
-        label: "一级 1",
-        type: "group",
-        children: [
-          {
-            id: 4,
-            label: "二级 1-1",
-            type: "group",
-            children: [
-              {
-                id: 9,
-                type: "condition",
-                label: "三级 1-1-1",
-                relation: "",
-                pId: "0",
-                seq: "1",
-                field: "input",
-                operator: "",
-                value: "",
-                operator: "",
-              },
-              {
-                id: 10,
-                type: "condition",
-                label: "三级 1-1-2",
-                relation: "",
-                field: "",
-                value: "",
-                operator: "",
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: 2,
-        label: "一级 2",
-        type: "group",
-        children: [
-          {
-            id: 5,
-            type: "condition",
-            label: "二级 2-1",
-            field: "",
-            value: "",
-            operator: "",
-            relation: "",
-          },
-          {
-            id: 6,
-            type: "condition",
-            label: "二级 2-2",
-            field: "",
-            value: "",
-            operator: "",
-            relation: "",
-          },
-        ],
-      },
-      {
-        id: 3,
-        label: "一级 3",
-        type: "group",
-        children: [
-          {
-            id: 7,
-            type: "condition",
-            label: "二级 3-1",
-            field: "",
-            value: "",
-            operator: "",
-            relation: "",
-          },
-          {
-            id: 8,
-            type: "condition",
-            label: "二级 3-2",
-            field: "",
-            value: "",
-            operator: "",
-            relation: "",
-          },
-        ],
-      },
-    ];
     return {
       filterText: "",
       isExpand: false,
       sceneMap: [],
-      sceneType: "",
+      sceneType: "markting",
       next_group: [],
       next_condition: [],
-      data: JSON.parse(JSON.stringify(data)),
+      data: [],
     };
-  },
-  computed: {
-    showAddRoot() {
-      return this.data.length == 0;
-    },
   },
   components: {
     condition,
@@ -267,9 +178,16 @@ export default {
     },
   },
   mounted() {
+    this.data = treeData;
     this.sceneMap = _sceneMap;
     this.next_group = next_group;
     this.next_condition = next_condition;
+  },
+
+  computed: {
+    curSceneFields() {
+      return this.sceneType ? this.sceneMap[this.sceneType].fields : {};
+    },
   },
 
   methods: {
@@ -353,6 +271,10 @@ export default {
       return data.label.indexOf(value) !== -1;
     },
 
+    changeSceneType(value) {
+      this.data = [];
+    },
+
     // 展开收起
     ExpandFun() {
       console.log(this.$refs.tree.store._getAllNodes().length);
@@ -371,13 +293,14 @@ export default {
     },
 
     updateConditionLeftValue(node, data, $event) {
-      data.field = $event;
+      this.$set(data, "field", $event);
+      this.$set(data, "value", "");
     },
     updateConditionOperateValue(node, data, $event) {
-      data.operator = $event;
+      this.$set(data, "operator", $event);
     },
     updateConditionRightValue(node, data, $event) {
-      data.value = $event;
+      this.$set(data, "value", $event);
     },
 
     changeRelation(value) {
