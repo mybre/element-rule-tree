@@ -286,7 +286,6 @@ export default {
         relation: "",
         next_group: false,
         next_condition: false,
-        isNew: true,
       };
 
       if (type && type == "isRoot") {
@@ -312,7 +311,6 @@ export default {
         relation: "",
         next_group: false,
         next_condition: false,
-        isNew: true,
       };
       if (type && type == "isRoot") {
         this.data.push(newChild);
@@ -437,20 +435,5 @@ export default {
 
 .custom-tree-container /deep/ .rule-comp {
   padding: 10px 0;
-}
-
-.custom-tree-container /deep/ .tree-blink {
-  animation-name: example;
-  animation-duration: 0.7s;
-  animation-iteration-count: 2;
-}
-
-@keyframes example {
-  from {
-    background-color: transparent;
-  }
-  to {
-    background-color: #c5d7fc;
-  }
 }
 </style>

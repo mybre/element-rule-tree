@@ -1,6 +1,6 @@
 <template>
   <div
-    class="el-tree-node tree-card"
+    class="el-tree-node tree-card "
     @click.stop="handleClick"
     @contextmenu="($event) => this.handleContextMenu($event)"
     v-show="node.visible"
@@ -12,6 +12,7 @@
       'is-checked': !node.disabled && node.checked,
       group: node.data.type == 'group',
       rule: node.data.type == 'rule',
+      'tree-blink': node.data.isNew
     }"
     role="treeitem"
     tabindex="-1"
@@ -187,7 +188,6 @@ export default {
     }
   },
 
-  mounted() {},
 
   data() {
     return {

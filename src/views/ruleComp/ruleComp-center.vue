@@ -1,6 +1,8 @@
 <template>
   <div>
-    <el-input v-model="value" />
+    <el-input
+      v-model="value"
+    />
   </div>
 </template>
 
@@ -20,6 +22,11 @@ export default {
     return {
       value: "",
     };
+  },
+  watch: {
+    value(v) {
+      this.$emit("updateRuleCompCenterValue", v);
+    },
   },
 };
 </script>

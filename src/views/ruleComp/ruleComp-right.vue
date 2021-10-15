@@ -21,6 +21,11 @@ export default {
       value: "",
     };
   },
+  watch: {
+    value(v) {
+      this.$emit("updateRuleCompRightValue", v);
+    },
+  },
 };
 </script>
 
