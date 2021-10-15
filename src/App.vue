@@ -1,11 +1,15 @@
 <template>
   <div id="app">
-    <div id="nav">
-    </div>
-    <router-view/>
+    <renderContent />
   </div>
 </template>
-
+<script>
+import renderContent from "./views/renderContent.vue";
+export default {
+  components: {
+    renderContent,
+  },
+};
+</script>
 <style lang="less">
-
 </style>
