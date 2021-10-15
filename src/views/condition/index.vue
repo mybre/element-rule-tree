@@ -37,6 +37,7 @@
         ><Right
           :node="node"
           :curSceneFields="curSceneFields"
+          :curRightOption="curRightOption"
           @updateConditionRightValue="updateConditionRightValue"
       /></el-col>
     </el-row>
@@ -65,6 +66,12 @@ export default {
       operatorMap: [],
     };
   },
+  computed: {
+    curRightOption() {
+      return this.curSceneFields[this.node.data.field]
+    },
+  },
+
   created() {
     this.operatorMap = operatorMap;
   },

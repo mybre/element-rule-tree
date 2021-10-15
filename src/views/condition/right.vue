@@ -12,12 +12,19 @@
       :curRightOption="curRightOption"
       @updateConditionRightValue="(v) => $emit('updateConditionRightValue', v)"
     />
+    <right-date
+      v-else-if="curRightOption && curRightOption.type == '3'"
+      :node="node"
+      :curRightOption="curRightOption"
+      @updateConditionRightValue="(v) => $emit('updateConditionRightValue', v)"
+    />
   </div>
 </template>
 
 <script>
 import RightInput from "./components/right-input.vue";
-import RightSelect from "./components/right-input.vue";
+import RightSelect from "./components/right-select.vue";
+import RightDate from "./components/right-date.vue";
 export default {
   name: "conditionRight",
   componentName: "conditionRight",
@@ -31,16 +38,11 @@ export default {
     curSceneFields: {
       default: () => {},
     },
-  },
-  computed: {
-    curRightOption() {
-      if (Object.keys(this.curSceneFields).length > 0) {
-        return this.curSceneFields[this.node.data.field];
-      } else {
-        return "";
-      }
+    curRightOption: {
+      default: () => {},
     },
   },
+
   data() {
     return {
       value: "",
@@ -54,6 +56,7 @@ export default {
   components: {
     RightInput,
     RightSelect,
+    RightDate,
   },
 };
 </script>

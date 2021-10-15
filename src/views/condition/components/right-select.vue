@@ -1,6 +1,18 @@
 <template>
   <div>
- 123123
+    <el-select
+      placeholder="条件值"
+      :value="value"
+      @change="(val) => $emit('updateConditionRightValue', val)"
+    >
+      <el-option
+        v-for="(val, key) in curRightOption.values"
+        :key="key"
+        :label="val"
+        :value="key"
+      >
+      </el-option>
+    </el-select>
   </div>
 </template>
 
@@ -25,12 +37,8 @@ export default {
     "node.data.value": {
       handler(val) {
         this.value = val;
-        console.log(val, "123123");
       },
       immediate: true,
-    },
-    value(val) {
-      this.$emit("updateConditionRightValue", val);
     },
   },
 };
