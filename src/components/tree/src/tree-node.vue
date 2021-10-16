@@ -10,8 +10,8 @@
       'is-hidden': !node.visible,
       'is-focusable': !node.disabled,
       'is-checked': !node.disabled && node.checked,
-      group: node.data.type == 'group',
-      condition: node.data.type == 'condition'
+      group: node.data.type === 'group',
+      condition: node.data.type === 'condition'
     }"
       role="treeitem"
       tabindex="-1"
@@ -27,7 +27,7 @@
   >
     <div class="el-tree-node__content">
       <span
-          v-if="node.data.type == 'group' && node.data.children.length > 0"
+          v-if="node.data.type === 'group' && node.data.children.length > 0"
           @click.stop="handleExpandIconClick"
           :class="[
           { 'is-leaf': node.isLeaf, expanded: !node.isLeaf && expanded },
@@ -70,7 +70,7 @@
             @node-expand="handleChildNodeExpand"
         >
         </el-tree-node>
-        <div v-if="node.data.type == 'condition'">
+        <div v-if="node.data.type === 'condition'">
           <node-condition :node="node"/>
         </div>
         <node-relation :node="node"/>

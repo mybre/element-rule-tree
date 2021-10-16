@@ -208,6 +208,7 @@ export default {
       next_condition: [],
       data: [],
       limitLevel: "3",
+      maxLevel:0,
     };
   },
   components: {
@@ -300,6 +301,7 @@ export default {
       if (type && type === "isRoot") {
         // 有 data 是根部
         this.data = [];
+        this.maxLevel = 0;
       } else {
         const parent = nodeCur.parent;
         const children = parent.data.children || parent.data;
@@ -320,6 +322,7 @@ export default {
 
     changeSceneType() {
       this.data = [];
+      this.maxLevel = 0;
     },
 
     // 展开收起
