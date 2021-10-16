@@ -1,35 +1,41 @@
 <template>
   <div>
     <div class="custom-tree-container">
-      <div style="padding: 30px 0">
-
-      </div>
+      <div style="padding: 30px 0"></div>
 
       <div class="tree-card" style="padding: 16px">
         <div style="margin-bottom: 30px">
           <el-row :gutter="20">
             <el-col :span="4">
               <el-select
-                  size="small"
-                  class="scene input"
-                  placeholder="业务场景"
-                  v-model="sceneType"
-                  @change="changeSceneType"
+                size="small"
+                class="scene input"
+                placeholder="业务场景"
+                v-model="sceneType"
+                @change="changeSceneType"
               >
                 <el-option
-                    v-for="(val, key) in sceneMap"
-                    :key="key"
-                    :label="val.scene"
-                    :value="key"
+                  v-for="(val, key) in sceneMap"
+                  :key="key"
+                  :label="val.scene"
+                  :value="key"
                 />
               </el-select>
             </el-col>
             <el-col :span="6">
-              <el-input size="small" placeholder="输入关键字进行过滤" v-model="filterText">
+              <el-input
+                size="small"
+                placeholder="输入关键字进行过滤"
+                v-model="filterText"
+              >
               </el-input>
             </el-col>
             <el-col :span="4">
-              <el-select v-model="limitLevel" placeholder="请选择最深嵌套" size="small">
+              <el-select
+                v-model="limitLevel"
+                placeholder="请选择最深嵌套"
+                size="small"
+              >
                 <el-option value="1" label="嵌套层级 1"></el-option>
                 <el-option value="2" label="嵌套层级 2"></el-option>
                 <el-option value="3" label="嵌套层级 3"></el-option>
@@ -43,48 +49,43 @@
               <div style="text-align: right">
                 <el-button-group>
                   <el-button
-                      type="primary"
-                      size="small"
-                      @click="appendGroup({ data, type: 'isRoot' })"
-                  >添加分组
-                  </el-button
-                  >
+                    type="primary"
+                    size="small"
+                    @click="appendGroup({ data, type: 'isRoot' })"
+                    >添加分组
+                  </el-button>
                   <el-button
-                      type="success"
-                      size="small"
-                      @click="appendRule({ data, type: 'isRoot' })"
-                  >添加条件
-                  </el-button
-                  >
+                    type="success"
+                    size="small"
+                    @click="appendRule({ data, type: 'isRoot' })"
+                    >添加条件
+                  </el-button>
                   <el-button
-                      type="danger"
-                      size="small"
-                      @click="remove({ data, type: 'isRoot' })"
-                  >清空
-                  </el-button
-                  >
+                    type="danger"
+                    size="small"
+                    @click="remove({ data, type: 'isRoot' })"
+                    >清空
+                  </el-button>
                 </el-button-group>
               </div>
             </el-col>
           </el-row>
         </div>
 
-
-
         <tree
-            ref="tree"
-            :data="data"
-            node-key="id"
-            default-expand-all
-            :indent="10"
-            :filter-node-method="filterNode"
-            :expand-on-click-node="false"
-            @node-click="handleNodeClick"
+          ref="tree"
+          :data="data"
+          node-key="id"
+          default-expand-all
+          :indent="10"
+          :filter-node-method="filterNode"
+          :expand-on-click-node="false"
+          @node-click="handleNodeClick"
         >
           <div
-              class="custom-tree-node"
-              slot="control"
-              slot-scope="{ node: nodeCur, data: dataCur }"
+            class="custom-tree-node"
+            slot="control"
+            slot-scope="{ node: nodeCur, data: dataCur }"
           >
             <span>type: {{ dataCur.type }}</span>
             <span>label: {{ dataCur.label }}</span>
@@ -97,76 +98,76 @@
             <span v-if="dataCur.type == 'group'">
               <el-button-group>
                 <el-button
-                    size="mini"
-                    type="primary"
-                    @click="() => appendGroup({ nodeCur, dataCur })"
-                >添加下层分组</el-button
+                  size="mini"
+                  type="primary"
+                  @click="() => appendGroup({ nodeCur, dataCur })"
+                  >添加下层分组</el-button
                 >
                 <el-button
-                    size="mini"
-                    type="success"
-                    @click="() => appendRule({ nodeCur, dataCur })"
-                >添加规则</el-button
+                  size="mini"
+                  type="success"
+                  @click="() => appendRule({ nodeCur, dataCur })"
+                  >添加规则</el-button
                 >
                 <el-button
-                    size="mini"
-                    type="danger"
-                    icon="el-icon-delete"
-                    @click="() => remove({ nodeCur, dataCur })"
+                  size="mini"
+                  type="danger"
+                  icon="el-icon-delete"
+                  @click="() => remove({ nodeCur, dataCur })"
                 ></el-button>
               </el-button-group>
             </span>
             <span v-else>
               <el-button
-                  size="mini"
-                  type="danger"
-                  icon="el-icon-delete"
-                  @click="() => remove({ nodeCur, dataCur })"
+                size="mini"
+                type="danger"
+                icon="el-icon-delete"
+                @click="() => remove({ nodeCur, dataCur })"
               ></el-button>
             </span>
           </div>
           <div slot="condition" slot-scope="{ node: nodeCur, data: dataCur }">
             <condition
-                :node="nodeCur"
-                :curSceneFields="curSceneFields"
-                @updateConditionLeftValue="
+              :node="nodeCur"
+              :curSceneFields="curSceneFields"
+              @updateConditionLeftValue="
                 updateConditionLeftValue(nodeCur, dataCur, $event)
               "
-                @updateConditionOperateValue="
+              @updateConditionOperateValue="
                 updateConditionOperateValue(nodeCur, dataCur, $event)
               "
-                @updateConditionRightValue="
+              @updateConditionRightValue="
                 updateConditionRightValue(nodeCur, dataCur, $event)
               "
             />
           </div>
-          <div slot="relation" slot-scope="{ node: nodeCur, data: dataCur }">
-<!--            <div>next_group: {{ dataCur.nextIsGroup }}</div>-->
+          <div slot="relation" slot-scope="{ data: dataCur }">
+            <!--            <div>next_group: {{ dataCur.nextIsGroup }}</div>-->
             <el-select
-                style="margin-top:10px"
-                size="mini"
-                class="tree-relation-input"
-                placeholder="关系"
-                v-model="dataCur.relation"
-                @change="changeRelation"
+              style="margin-top: 10px"
+              size="mini"
+              class="tree-relation-input"
+              placeholder="关系"
+              v-model="dataCur.relation"
+              @change="changeRelation"
             >
               <div v-if="dataCur.nextIsGroup">
                 <el-option
-                    v-for="(val, key) in next_group"
-                    :key="key"
-                    :label="val"
-                    :value="key"
-                    @change="changeRelation"
+                  v-for="(val, key) in next_group"
+                  :key="key"
+                  :label="val"
+                  :value="key"
+                  @change="changeRelation"
                 >
                 </el-option>
               </div>
               <div v-else>
                 <el-option
-                    v-for="(val, key) in next_condition"
-                    :key="key"
-                    :label="val"
-                    :value="key"
-                    @change="changeRelation"
+                  v-for="(val, key) in next_condition"
+                  :key="key"
+                  :label="val"
+                  :value="key"
+                  @change="changeRelation"
                 >
                 </el-option>
               </div>
@@ -179,17 +180,10 @@
 </template>
 
 <script>
-let id = 1000;
 import tree from "../components/tree";
-import {
-  _list,
-  _sceneMap,
-  next_group,
-  next_condition,
-  operatorMap,
-  treeData1
-} from "./ruleData";
+import { _sceneMap, next_group, next_condition, treeData1 } from "./ruleData";
 import condition from "./condition";
+let id = 1000;
 
 export default {
   data() {
@@ -201,7 +195,7 @@ export default {
       next_group: [],
       next_condition: [],
       data: [],
-      limitLevel:"3"
+      limitLevel: "3",
     };
   },
   components: {
@@ -227,7 +221,7 @@ export default {
   },
 
   methods: {
-    appendGroup({nodeCur, dataCur, type}) {
+    appendGroup({ nodeCur, dataCur, type }) {
       const newChild = {
         id: id++,
         label: `组合 ${id}`,
@@ -238,10 +232,10 @@ export default {
         pId: 0,
         field: "",
         operator: "",
-        value: ""
+        value: "",
       };
 
-      if (type && type == "isRoot") {
+      if (type && type === "isRoot") {
         this.data.push(newChild);
         this.handleNodeIsGroup(this.data);
       } else {
@@ -254,7 +248,7 @@ export default {
         this.ExpandFun();
       }
     },
-    appendRule({nodeCur, dataCur, type}) {
+    appendRule({ nodeCur, dataCur, type }) {
       const newChild = {
         id: id++,
         label: `条件 ${id}`,
@@ -264,7 +258,7 @@ export default {
         operator: "",
         relation: "",
         nextIsGroup: false,
-        pId: 0
+        pId: 0,
       };
       if (type && type === "isRoot") {
         this.data.push(newChild);
@@ -290,7 +284,7 @@ export default {
       }
     },
 
-    remove({nodeCur, dataCur, type}) {
+    remove({ nodeCur, dataCur, type }) {
       if (type && type === "isRoot") {
         // 有 data 是根部
         this.data = [];
@@ -350,7 +344,8 @@ export default {
 
     sumbit() {
       let obj = JSON.parse(JSON.stringify(this.data));
-      let list = this.extractTree(obj, 'children');
+      let list = this.extractTree(obj, "children");
+      console.log(list, "result");
     },
 
     // 同层结构转树形结构
@@ -359,14 +354,14 @@ export default {
       if (!Array.isArray(data)) {
         return result;
       }
-      data.forEach(item => {
+      data.forEach((item) => {
         delete item.children;
       });
       let map = {};
-      data.forEach(item => {
+      data.forEach((item) => {
         map[item.id] = item;
       });
-      data.forEach(item => {
+      data.forEach((item) => {
         let parent = map[item.pId];
         if (parent) {
           (parent.children || (parent.children = [])).push(item);
@@ -379,8 +374,11 @@ export default {
     extractTree(arrs, childs, attrArr) {
       let attrList = [];
       if (!Array.isArray(arrs) && !arrs.length) return [];
-      if (typeof childs !== 'string') return [];
-      if (!Array.isArray(attrArr) || Array.isArray(attrArr) && !attrArr.length) {
+      if (typeof childs !== "string") return [];
+      if (
+        !Array.isArray(attrArr) ||
+        (Array.isArray(attrArr) && !attrArr.length)
+      ) {
         attrList = Object.keys(arrs[0]);
         attrList.splice(attrList.indexOf(childs), 1);
       } else {
@@ -390,7 +388,7 @@ export default {
       const getObj = (arr) => {
         arr.forEach(function (row) {
           let obj = {};
-          attrList.forEach(item => {
+          attrList.forEach((item) => {
             obj[item] = row[item];
           });
           list.push(obj);
@@ -442,13 +440,13 @@ export default {
 .custom-tree-container /deep/ .group {
   border-left: 6px solid #199dff;
   margin: 10px;
-  padding:10px;
+  padding: 10px;
 }
 
 .custom-tree-container /deep/ .condition {
   border-left: 6px solid #64ff08 !important;
   margin: 10px;
-  padding:10px;
+  padding: 10px;
 }
 
 .custom-tree-container /deep/ .condition-comp {
