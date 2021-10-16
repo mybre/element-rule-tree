@@ -95,7 +95,7 @@
             <span>value: {{ dataCur.value }}</span>
             <span>operator: {{ dataCur.operator }}</span>
             <span>relation: {{ dataCur.relation }}</span>
-            <span v-if="dataCur.type == 'group'">
+            <span v-if="dataCur.type === 'group'">
               <el-button-group>
                 <el-button
                   size="mini"
@@ -181,8 +181,8 @@
 
 <script>
 import tree from "../components/tree";
-import { _sceneMap, next_group, next_condition, treeData1 } from "./ruleData";
-import condition from "./condition";
+import { _sceneMap, next_group, next_condition, treeData1 } from "../components/tree/data";
+import condition from "../components/tree/condition";
 let id = 1000;
 
 export default {
@@ -306,7 +306,7 @@ export default {
       return JSON.stringify(data).indexOf(value) !== -1;
     },
 
-    changeSceneType(value) {
+    changeSceneType() {
       this.data = [];
     },
 

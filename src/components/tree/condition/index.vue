@@ -48,7 +48,7 @@
 
 <script>
 import Right from "./right";
-import { operatorMap } from "../ruleData.js";
+import { operatorMap } from "../data.js";
 export default {
   name: "Condition",
   componentName: "Condition",
