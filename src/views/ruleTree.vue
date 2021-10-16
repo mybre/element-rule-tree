@@ -51,6 +51,7 @@
                   <el-button
                     type="primary"
                     size="small"
+                    v-if="Number(limitLevel) > 1"
                     @click="appendGroup({ data, type: 'isRoot' })"
                     >添加分组
                   </el-button>
@@ -63,6 +64,7 @@
                   <el-button
                     type="danger"
                     size="small"
+                    v-if="data.length"
                     @click="remove({ data, type: 'isRoot' })"
                     >清空
                   </el-button>
@@ -100,12 +102,14 @@
                 <el-button
                   size="mini"
                   type="primary"
+                  v-if="Number(limitLevel) - 1 > nodeCur.level"
                   @click="() => appendGroup({ nodeCur, dataCur })"
                   >添加下层分组</el-button
                 >
                 <el-button
                   size="mini"
                   type="success"
+                  v-if="Number(limitLevel) > nodeCur.level"
                   @click="() => appendRule({ nodeCur, dataCur })"
                   >添加规则</el-button
                 >
@@ -184,8 +188,11 @@ import tree from "../components/tree";
 import { _sceneMap, next_group, next_condition, treeData1 } from "../components/tree/data";
 import condition from "../components/tree/condition";
 let id = 1000;
-
+import emitter from "element-ui/src/mixins/emitter";
 export default {
+  mixins:[emitter],
+  name:'ruleTree',
+  componentName:'ruleTree',
   data() {
     return {
       filterText: "",

@@ -22,7 +22,6 @@ export default {
     "node.data.value": {
       handler(val) {
         this.value = val;
-        console.log(val, "123123");
       },
       immediate: true,
     },
