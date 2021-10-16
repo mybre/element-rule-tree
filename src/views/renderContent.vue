@@ -5,66 +5,70 @@
 
       </div>
 
-      <div class="tree-card" style="padding: 20px">
-        <el-row :gutter="20">
-          <el-col :span="4">
-            <el-select
-                class="scene input"
-                placeholder="业务场景"
-                v-model="sceneType"
-                @change="changeSceneType"
-            >
-              <el-option
-                  v-for="(val, key) in sceneMap"
-                  :key="key"
-                  :label="val.scene"
-                  :value="key"
-              />
-            </el-select>
-          </el-col>
-          <el-col :span="6">
-            <el-input placeholder="输入关键字进行过滤" v-model="filterText">
-            </el-input>
-          </el-col>
-          <el-col :span="4">
-            <el-select v-model="limitLevel" placeholder="请选择最深嵌套">
-              <el-option value="1" label="嵌套层级 1"></el-option>
-              <el-option value="2" label="嵌套层级 2"></el-option>
-              <el-option value="3" label="嵌套层级 3"></el-option>
-              <el-option value="4" label="嵌套层级 4"></el-option>
-            </el-select>
-          </el-col>
-          <el-col :span="2">
-            <el-button @click="sumbit">提交</el-button>
-          </el-col>
-          <el-col :span="8">
-            <div style="text-align: right">
-              <el-button-group>
-                <el-button
-                    type="primary"
-                    size="mini"
-                    @click="appendGroup({ data, type: 'isRoot' })"
-                >添加分组
-                </el-button
-                >
-                <el-button
-                    type="success"
-                    size="mini"
-                    @click="appendRule({ data, type: 'isRoot' })"
-                >添加条件
-                </el-button
-                >
-                <el-button
-                    type="danger"
-                    size="mini"
-                    @click="remove({ data, type: 'isRoot' })"
-                >清空
-                </el-button
-                >
-              </el-button-group>
-            </div>
-          </el-col>
-        </el-row>
+      <div class="tree-card" style="padding: 16px">
+        <div style="margin-bottom: 30px">
+          <el-row :gutter="20">
+            <el-col :span="4">
+              <el-select
+                  size="small"
+                  class="scene input"
+                  placeholder="业务场景"
+                  v-model="sceneType"
+                  @change="changeSceneType"
+              >
+                <el-option
+                    v-for="(val, key) in sceneMap"
+                    :key="key"
+                    :label="val.scene"
+                    :value="key"
+                />
+              </el-select>
+            </el-col>
+            <el-col :span="6">
+              <el-input size="small" placeholder="输入关键字进行过滤" v-model="filterText">
+              </el-input>
+            </el-col>
+            <el-col :span="4">
+              <el-select v-model="limitLevel" placeholder="请选择最深嵌套" size="small">
+                <el-option value="1" label="嵌套层级 1"></el-option>
+                <el-option value="2" label="嵌套层级 2"></el-option>
+                <el-option value="3" label="嵌套层级 3"></el-option>
+                <el-option value="4" label="嵌套层级 4"></el-option>
+              </el-select>
+            </el-col>
+            <el-col :span="2">
+              <el-button size="small" @click="sumbit">提交</el-button>
+            </el-col>
+            <el-col :span="8">
+              <div style="text-align: right">
+                <el-button-group>
+                  <el-button
+                      type="primary"
+                      size="small"
+                      @click="appendGroup({ data, type: 'isRoot' })"
+                  >添加分组
+                  </el-button
+                  >
+                  <el-button
+                      type="success"
+                      size="small"
+                      @click="appendRule({ data, type: 'isRoot' })"
+                  >添加条件
+                  </el-button
+                  >
+                  <el-button
+                      type="danger"
+                      size="small"
+                      @click="remove({ data, type: 'isRoot' })"
+                  >清空
+                  </el-button
+                  >
+                </el-button-group>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+
 
 
         <tree
@@ -137,8 +141,10 @@
             />
           </div>
           <div slot="relation" slot-scope="{ node: nodeCur, data: dataCur }">
-            <div>next_group: {{ dataCur.nextIsGroup }}</div>
+<!--            <div>next_group: {{ dataCur.nextIsGroup }}</div>-->
             <el-select
+                style="margin-top:10px"
+                size="mini"
                 class="tree-relation-input"
                 placeholder="关系"
                 v-model="dataCur.relation"
@@ -167,7 +173,6 @@
             </el-select>
           </div>
         </tree>
-
       </div>
     </div>
   </div>
@@ -436,16 +441,18 @@ export default {
 
 .custom-tree-container /deep/ .group {
   border-left: 6px solid #199dff;
-  padding: 10px;
+  margin: 10px;
+  padding:10px;
 }
 
 .custom-tree-container /deep/ .condition {
   border-left: 6px solid #64ff08 !important;
-  padding: 10px;
+  margin: 10px;
+  padding:10px;
 }
 
 .custom-tree-container /deep/ .condition-comp {
-  padding: 10px 0;
+  //padding: 10px 0;
 }
 
 .custom-tree-container /deep/ .tree-blink {

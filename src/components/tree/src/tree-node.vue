@@ -1,10 +1,10 @@
 <template>
   <div
-    class="el-tree-node tree-card "
-    @click.stop="handleClick"
-    @contextmenu="($event) => this.handleContextMenu($event)"
-    v-show="node.visible"
-    :class="{
+      class="el-tree-node tree-card "
+      @click.stop="handleClick"
+      @contextmenu="($event) => this.handleContextMenu($event)"
+      v-show="node.visible"
+      :class="{
       'is-expanded': expanded,
       'is-current': node.isCurrent,
       'is-hidden': !node.visible,
@@ -13,26 +13,23 @@
       group: node.data.type == 'group',
       condition: node.data.type == 'condition'
     }"
-    role="treeitem"
-    tabindex="-1"
-    :aria-expanded="expanded"
-    :aria-disabled="node.disabled"
-    :aria-checked="node.checked"
-    :draggable="tree.draggable"
-    @dragstart.stop="handleDragStart"
-    @dragover.stop="handleDragOver"
-    @dragend.stop="handleDragEnd"
-    @drop.stop="handleDrop"
-    ref="node"
-    :style="{
-      margin: '15px ' + (node.level - 1) * tree.indent + 'px',
-    }"
+      role="treeitem"
+      tabindex="-1"
+      :aria-expanded="expanded"
+      :aria-disabled="node.disabled"
+      :aria-checked="node.checked"
+      :draggable="tree.draggable"
+      @dragstart.stop="handleDragStart"
+      @dragover.stop="handleDragOver"
+      @dragend.stop="handleDragEnd"
+      @drop.stop="handleDrop"
+      ref="node"
   >
     <div class="el-tree-node__content">
       <span
-        v-if="node.data.type == 'group'"
-        @click.stop="handleExpandIconClick"
-        :class="[
+          v-if="node.data.type == 'group' && node.data.children.length > 0"
+          @click.stop="handleExpandIconClick"
+          :class="[
           { 'is-leaf': node.isLeaf, expanded: !node.isLeaf && expanded },
           'el-tree-node__expand-icon',
           tree.iconClass ? tree.iconClass : 'el-icon-caret-right',
@@ -40,37 +37,37 @@
       >
       </span>
       <el-checkbox
-        v-if="showCheckbox"
-        v-model="node.checked"
-        :indeterminate="node.indeterminate"
-        :disabled="!!node.disabled"
-        @click.native.stop
-        @change="handleCheckChange"
+          v-if="showCheckbox"
+          v-model="node.checked"
+          :indeterminate="node.indeterminate"
+          :disabled="!!node.disabled"
+          @click.native.stop
+          @change="handleCheckChange"
       >
       </el-checkbox>
       <span
-        v-if="node.loading"
-        class="el-tree-node__loading-icon el-icon-loading"
+          v-if="node.loading"
+          class="el-tree-node__loading-icon el-icon-loading"
       >
       </span>
       <node-content :node="node"></node-content>
     </div>
     <el-collapse-transition>
       <div
-        class="el-tree-node__children"
-        v-if="!renderAfterExpand || childNodeRendered"
-        v-show="expanded"
-        role="group"
-        :aria-expanded="expanded"
+          class="el-tree-node__children"
+          v-if="!renderAfterExpand || childNodeRendered"
+          v-show="expanded"
+          role="group"
+          :aria-expanded="expanded"
       >
         <el-tree-node
-          :render-content="renderContent"
-          v-for="child in node.childNodes"
-          :render-after-expand="renderAfterExpand"
-          :show-checkbox="showCheckbox"
-          :key="getNodeKey(child)"
-          :node="child"
-          @node-expand="handleChildNodeExpand"
+            :render-content="renderContent"
+            v-for="child in node.childNodes"
+            :render-after-expand="renderAfterExpand"
+            :show-checkbox="showCheckbox"
+            :key="getNodeKey(child)"
+            :node="child"
+            @node-expand="handleChildNodeExpand"
         >
         </el-tree-node>
         <div v-if="node.data.type == 'condition'">
@@ -87,7 +84,7 @@ import ElCollapseTransition from "element-ui/src/transitions/collapse-transition
 import ElCheckbox from "element-ui/packages/checkbox";
 import emitter from "element-ui/src/mixins/emitter";
 import ElTreeNode from "./tree-node.vue";
-import { getNodeKey } from "./model/util";
+import {getNodeKey} from "./model/util";
 
 export default {
   name: "ElTreeNode",
@@ -128,18 +125,18 @@ export default {
         const parent = this.$parent;
         const tree = parent.tree;
         const node = this.node;
-        const { data, store } = node;
+        const {data, store} = node;
         return parent.renderContent ? (
-          parent.renderContent.call(parent._renderProxy, h, {
-            _self: tree.$vnode.context,
-            node,
-            data,
-            store,
-          })
+            parent.renderContent.call(parent._renderProxy, h, {
+              _self: tree.$vnode.context,
+              node,
+              data,
+              store,
+            })
         ) : tree.$scopedSlots.control ? (
-          tree.$scopedSlots.control({ node, data })
+            tree.$scopedSlots.control({node, data})
         ) : (
-          <span class="el-tree-node__label">{node.label}</span>
+            <span class="el-tree-node__label">{node.label}</span>
         );
       },
     },
@@ -153,15 +150,15 @@ export default {
         const parent = this.$parent;
         const tree = parent.tree;
         const node = this.node;
-        const { data, store } = node;
+        const {data, store} = node;
         return parent.renderContent ? (
-          parent.renderContent.call(parent._renderProxy, h, {
-            _self: tree.$vnode.context,
-            node,
-            data,
-            store,
-          })
-        ) : tree.$scopedSlots.condition({ node, data });
+            parent.renderContent.call(parent._renderProxy, h, {
+              _self: tree.$vnode.context,
+              node,
+              data,
+              store,
+            })
+        ) : tree.$scopedSlots.condition({node, data});
       },
     },
     NodeRelation: {
@@ -174,15 +171,15 @@ export default {
         const parent = this.$parent;
         const tree = parent.tree;
         const node = this.node;
-        const { data, store } = node;
+        const {data, store} = node;
         return parent.renderContent ? (
-          parent.renderContent.call(parent._renderProxy, h, {
-            _self: tree.$vnode.context,
-            node,
-            data,
-            store,
-          })
-        ) : tree.$scopedSlots.relation({ node, data });
+            parent.renderContent.call(parent._renderProxy, h, {
+              _self: tree.$vnode.context,
+              node,
+              data,
+              store,
+            })
+        ) : tree.$scopedSlots.relation({node, data});
       },
     }
   },
@@ -222,8 +219,8 @@ export default {
 
     handleSelectChange(checked, indeterminate) {
       if (
-        this.oldChecked !== checked &&
-        this.oldIndeterminate !== indeterminate
+          this.oldChecked !== checked &&
+          this.oldIndeterminate !== indeterminate
       ) {
         this.tree.$emit("check-change", this.node.data, checked, indeterminate);
       }
@@ -235,9 +232,9 @@ export default {
       const store = this.tree.store;
       store.setCurrentNode(this.node);
       this.tree.$emit(
-        "current-change",
-        store.currentNode ? store.currentNode.data : null,
-        store.currentNode
+          "current-change",
+          store.currentNode ? store.currentNode.data : null,
+          store.currentNode
       );
       this.tree.currentNode = this;
       if (this.tree.expandOnClickNode) {
@@ -245,7 +242,7 @@ export default {
       }
       if (this.tree.checkOnClickNode && !this.node.disabled) {
         this.handleCheckChange(null, {
-          target: { checked: !this.node.checked },
+          target: {checked: !this.node.checked},
         });
       }
       this.tree.$emit("node-click", this.node.data, this.node, this);
@@ -253,18 +250,18 @@ export default {
 
     handleContextMenu(event) {
       if (
-        this.tree._events["node-contextmenu"] &&
-        this.tree._events["node-contextmenu"].length > 0
+          this.tree._events["node-contextmenu"] &&
+          this.tree._events["node-contextmenu"].length > 0
       ) {
         event.stopPropagation();
         event.preventDefault();
       }
       this.tree.$emit(
-        "node-contextmenu",
-        event,
-        this.node.data,
-        this.node,
-        this
+          "node-contextmenu",
+          event,
+          this.node.data,
+          this.node,
+          this
       );
     },
 
