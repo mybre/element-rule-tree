@@ -73,7 +73,8 @@ export default class Node {
     this.parent = null;
     this.visible = true;
     this.isCurrent = false;
-
+    this.pId = options.data.pId;
+    this.nodeId = options.data.id;
     for (let name in options) {
       if (options.hasOwnProperty(name)) {
         this[name] = options[name];

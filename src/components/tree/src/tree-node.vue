@@ -11,8 +11,7 @@
       'is-focusable': !node.disabled,
       'is-checked': !node.disabled && node.checked,
       group: node.data.type == 'group',
-      condition: node.data.type == 'condition',
-      'tree-blink': node.data.isNew
+      condition: node.data.type == 'condition'
     }"
     role="treeitem"
     tabindex="-1"
