@@ -185,7 +185,12 @@
 
 <script>
 import tree from "../components/tree";
-import { _sceneMap, next_group, next_condition, treeData1 } from "../components/tree/data";
+import {
+  _sceneMap,
+  next_group,
+  next_condition,
+  _list,
+} from "../components/tree/data";
 import condition from "../components/tree/condition";
 let id = 1000;
 import emitter from "element-ui/src/mixins/emitter";
@@ -215,7 +220,7 @@ export default {
     },
   },
   mounted() {
-    this.data = this.toTree(treeData1);
+    this.data = this.toTree(_list);
     this.sceneMap = _sceneMap;
     this.next_group = next_group;
     this.next_condition = next_condition;
