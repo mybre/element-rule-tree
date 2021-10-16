@@ -5,6 +5,7 @@
 			type="date"
 			placeholder="选择日期"
 			@change="setFieldVal"
+      size="mini"
 		>
 		</el-date-picker>
 	</div>

@@ -6,6 +6,7 @@
           placeholder="属性"
           :value="node.data.field"
           @change="changeLeftValue"
+          size="mini"
         >
           <el-option
             v-for="(val, key) in curSceneFields"
@@ -22,6 +23,7 @@
           placeholder="过滤条件"
           :value="node.data.operator"
           @change="(v) => $emit('updateConditionOperateValue', v)"
+          size="mini"
         >
           <el-option
             v-for="(val, key) in operatorMap"

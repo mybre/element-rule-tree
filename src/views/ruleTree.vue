@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="custom-tree-container">
+    <div class="custom-tree-container" :style="{width:`${800 + maxLevel * 50}px`}">
       <div style="padding: 30px 0"></div>
 
       <div class="tree-card" style="padding: 16px">
@@ -222,6 +222,7 @@ export default {
   },
   mounted() {
     this.data = this.toTree(_list);
+    this.getDepth();
     this.sceneMap = _sceneMap;
     this.next_group = next_group;
     this.next_condition = next_condition;
@@ -234,6 +235,32 @@ export default {
   },
 
   methods: {
+
+
+    // 递归遍历 查找深度
+    getDepth() {
+      var arr = this.data;
+      var depth = 0;
+      while (arr.length > 0) {
+        var temp = [];
+        for (var i = 0; i < arr.length; i++) {
+          temp.push(arr[i]);
+        }
+        arr = [];
+        for (var i = 0; i < temp.length; i++) {
+          if(temp[i].children) {
+            for (var j = 0; j < temp[i].children.length; j++) {
+              arr.push(temp[i].children[j]);
+            }
+          }
+        }
+        if (arr.length >= 0) {
+          depth++;
+        }
+      }
+      this.maxLevel = depth;
+    },
+
     appendGroup({ nodeCur, dataCur, type }) {
       const newChild = {
         id: id++,
@@ -260,6 +287,7 @@ export default {
         this.handleNodeIsGroup(dataCur.children);
         this.ExpandFun();
       }
+      this.getDepth();
     },
     appendRule({ nodeCur, dataCur, type }) {
       const newChild = {
@@ -281,6 +309,7 @@ export default {
         dataCur.children.push(newChild);
         this.handleNodeIsGroup(dataCur.children);
       }
+      this.getDepth();
     },
 
     // 处理当前组内每个块与下个块之间的关系
@@ -309,6 +338,7 @@ export default {
         children.splice(index, 1);
         this.handleNodeIsGroup(children);
       }
+      this.getDepth();
     },
 
     handleNodeClick(data) {
@@ -420,7 +450,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .custom-tree-container {
-  width: 900px;
+  //width: 900px;
 }
 
 .custom-tree-container /deep/ .custom-tree-node {

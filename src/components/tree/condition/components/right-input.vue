@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-input v-model="value" />
+    <el-input v-model="value"  size="mini"/>
   </div>
 </template>
 
