@@ -1,13 +1,13 @@
 <template>
   <div id="app">
-    <renderContent />
+    <ruleTree />
   </div>
 </template>
 <script>
-import renderContent from "./views/ruleTree.vue";
+import ruleTree from "./views/ruleTree.vue";
 export default {
   components: {
-    renderContent,
+    ruleTree,
   },
 };
 </script>
