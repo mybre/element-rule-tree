@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-input v-model="value"  size="mini"/>
+    <el-input v-model="value" />
   </div>
 </template>
 
@@ -22,6 +22,7 @@ export default {
     "node.data.value": {
       handler(val) {
         this.value = val;
+        console.log(val, "123123");
       },
       immediate: true,
     },

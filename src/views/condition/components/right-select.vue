@@ -3,7 +3,6 @@
     <el-select
       placeholder="条件值"
       :value="value"
-      size="mini"
       @change="(val) => $emit('updateConditionRightValue', val)"
     >
       <el-option

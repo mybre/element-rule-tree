@@ -1,14 +1,31 @@
 <template>
   <div>
     <div class="custom-tree-container">
-      <div style="padding: 30px 0"></div>
-
-      <div class="tree-card" style="padding: 16px">
-        <div style="margin-bottom: 30px">
+      <div class="block">
+        <p>使用 render-content</p>
+        <div style="padding: 30px 0">
           <el-row :gutter="20">
+            <el-col :span="8">
+              <el-button-group>
+                <el-button
+                  type="primary"
+                  @click="appendGroup({ data, type: 'isRoot' })"
+                  >添加分组</el-button
+                >
+                <el-button
+                  type="success"
+                  @click="appendRule({ data, type: 'isRoot' })"
+                  >添加条件</el-button
+                >
+                <el-button
+                  type="danger"
+                  @click="remove({ data, type: 'isRoot' })"
+                  >清空</el-button
+                >
+              </el-button-group>
+            </el-col>
             <el-col :span="4">
               <el-select
-                size="small"
                 class="scene input"
                 placeholder="业务场景"
                 v-model="sceneType"
@@ -22,52 +39,9 @@
                 />
               </el-select>
             </el-col>
-            <el-col :span="6">
-              <el-input
-                size="small"
-                placeholder="输入关键字进行过滤"
-                v-model="filterText"
-              >
+            <el-col :span="12">
+              <el-input placeholder="输入关键字进行过滤" v-model="filterText">
               </el-input>
-            </el-col>
-            <el-col :span="4">
-              <el-select
-                v-model="limitLevel"
-                placeholder="请选择最深嵌套"
-                size="small"
-              >
-                <el-option value="1" label="嵌套层级 1"></el-option>
-                <el-option value="2" label="嵌套层级 2"></el-option>
-                <el-option value="3" label="嵌套层级 3"></el-option>
-                <el-option value="4" label="嵌套层级 4"></el-option>
-              </el-select>
-            </el-col>
-            <el-col :span="2">
-              <el-button size="small" @click="sumbit">提交</el-button>
-            </el-col>
-            <el-col :span="8">
-              <div style="text-align: right">
-                <el-button-group>
-                  <el-button
-                    type="primary"
-                    size="small"
-                    @click="appendGroup({ data, type: 'isRoot' })"
-                    >添加分组
-                  </el-button>
-                  <el-button
-                    type="success"
-                    size="small"
-                    @click="appendRule({ data, type: 'isRoot' })"
-                    >添加条件
-                  </el-button>
-                  <el-button
-                    type="danger"
-                    size="small"
-                    @click="remove({ data, type: 'isRoot' })"
-                    >清空
-                  </el-button>
-                </el-button-group>
-              </div>
             </el-col>
           </el-row>
         </div>
@@ -87,15 +61,8 @@
             slot="control"
             slot-scope="{ node: nodeCur, data: dataCur }"
           >
-            <span>type: {{ dataCur.type }}</span>
-            <span>label: {{ dataCur.label }}</span>
-            <span>id: {{ dataCur.id }}</span>
-            <span>pId: {{ dataCur.pId }}</span>
-            <span>field: {{ dataCur.field }}</span>
-            <span>value: {{ dataCur.value }}</span>
-            <span>operator: {{ dataCur.operator }}</span>
-            <span>relation: {{ dataCur.relation }}</span>
-            <span v-if="dataCur.type === 'group'">
+            <span>{{ nodeCur.data.field }}</span>
+            <span v-if="dataCur.type == 'group'">
               <el-button-group>
                 <el-button
                   size="mini"
@@ -141,11 +108,9 @@
               "
             />
           </div>
-          <div slot="relation" slot-scope="{ data: dataCur }">
-            <!--            <div>next_group: {{ dataCur.nextIsGroup }}</div>-->
+          <div slot="relation" slot-scope="{ node: nodeCur, data: dataCur }">
+            <div>next_group: {{ dataCur.nextIsGroup }}</div>
             <el-select
-              style="margin-top: 10px"
-              size="mini"
               class="tree-relation-input"
               placeholder="关系"
               v-model="dataCur.relation"
@@ -180,11 +145,17 @@
 </template>
 
 <script>
-import tree from "../components/tree";
-import { _sceneMap, next_group, next_condition, treeData1 } from "../components/tree/data";
-import condition from "../components/tree/condition";
 let id = 1000;
-
+import tree from "../components/tree";
+import {
+  _list,
+  _sceneMap,
+  next_group,
+  next_condition,
+  operatorMap,
+  treeData,
+} from "./ruleData";
+import condition from "./condition";
 export default {
   data() {
     return {
@@ -195,7 +166,6 @@ export default {
       next_group: [],
       next_condition: [],
       data: [],
-      limitLevel: "3",
     };
   },
   components: {
@@ -208,7 +178,7 @@ export default {
     },
   },
   mounted() {
-    this.data = this.toTree(treeData1);
+    this.data = treeData;
     this.sceneMap = _sceneMap;
     this.next_group = next_group;
     this.next_condition = next_condition;
@@ -221,34 +191,30 @@ export default {
   },
 
   methods: {
-    appendGroup({ nodeCur, dataCur, type }) {
+    appendGroup({ dataCur, type }) {
       const newChild = {
         id: id++,
-        label: `组合 ${id}`,
+        label: `条件组合 ${id}`,
         children: [],
         type: "group",
         relation: "",
         nextIsGroup: false,
-        pId: 0,
-        field: "",
-        operator: "",
-        value: "",
+        isNew: true,
       };
 
-      if (type && type === "isRoot") {
+      if (type && type == "isRoot") {
         this.data.push(newChild);
         this.handleNodeIsGroup(this.data);
       } else {
         if (!dataCur.children) {
           this.$set(dataCur, "children", []);
         }
-        newChild.pId = nodeCur.nodeId;
         dataCur.children.push(newChild);
         this.handleNodeIsGroup(dataCur.children);
         this.ExpandFun();
       }
     },
-    appendRule({ nodeCur, dataCur, type }) {
+    appendRule({ dataCur, type }) {
       const newChild = {
         id: id++,
         label: `条件 ${id}`,
@@ -258,13 +224,12 @@ export default {
         operator: "",
         relation: "",
         nextIsGroup: false,
-        pId: 0,
+        isNew: true,
       };
-      if (type && type === "isRoot") {
+      if (type && type == "isRoot") {
         this.data.push(newChild);
         this.handleNodeIsGroup(this.data);
       } else {
-        newChild.pId = nodeCur.nodeId;
         dataCur.children.push(newChild);
         this.handleNodeIsGroup(dataCur.children);
       }
@@ -276,7 +241,7 @@ export default {
         this.$set(data[data.length - 1], "nextIsGroup", false);
       }
       for (let i = 0; i < data.length - 1; ++i) {
-        if (data[i + 1].type === "group") {
+        if (data[i + 1].type == "group") {
           this.$set(data[i], "nextIsGroup", true);
         } else {
           this.$set(data[i], "nextIsGroup", false);
@@ -285,7 +250,7 @@ export default {
     },
 
     remove({ nodeCur, dataCur, type }) {
-      if (type && type === "isRoot") {
+      if (type && type == "isRoot") {
         // 有 data 是根部
         this.data = [];
       } else {
@@ -303,16 +268,16 @@ export default {
 
     filterNode(value, data) {
       if (!value) return true;
-      return JSON.stringify(data).indexOf(value) !== -1;
+      return data.label.indexOf(value) !== -1;
     },
 
-    changeSceneType() {
+    changeSceneType(value) {
       this.data = [];
     },
 
     // 展开收起
     ExpandFun() {
-      // console.log(this.$refs.tree.store._getAllNodes().length);
+      console.log(this.$refs.tree.store._getAllNodes().length);
       // let type = Object.prototype.toString.call(this.$refs.tree)
       this.isExpand = true;
       this.DynamicScaling();
@@ -341,65 +306,6 @@ export default {
     changeRelation(value) {
       console.log(value, "changeRelation");
     },
-
-    sumbit() {
-      let obj = JSON.parse(JSON.stringify(this.data));
-      let list = this.extractTree(obj, "children");
-      console.log(list, "result");
-    },
-
-    // 同层结构转树形结构
-    toTree(data) {
-      let result = [];
-      if (!Array.isArray(data)) {
-        return result;
-      }
-      data.forEach((item) => {
-        delete item.children;
-      });
-      let map = {};
-      data.forEach((item) => {
-        map[item.id] = item;
-      });
-      data.forEach((item) => {
-        let parent = map[item.pId];
-        if (parent) {
-          (parent.children || (parent.children = [])).push(item);
-        } else {
-          result.push(item);
-        }
-      });
-      return result;
-    },
-    extractTree(arrs, childs, attrArr) {
-      let attrList = [];
-      if (!Array.isArray(arrs) && !arrs.length) return [];
-      if (typeof childs !== "string") return [];
-      if (
-        !Array.isArray(attrArr) ||
-        (Array.isArray(attrArr) && !attrArr.length)
-      ) {
-        attrList = Object.keys(arrs[0]);
-        attrList.splice(attrList.indexOf(childs), 1);
-      } else {
-        attrList = attrArr;
-      }
-      let list = [];
-      const getObj = (arr) => {
-        arr.forEach(function (row) {
-          let obj = {};
-          attrList.forEach((item) => {
-            obj[item] = row[item];
-          });
-          list.push(obj);
-          if (row[childs]) {
-            getObj(row[childs]);
-          }
-        });
-        return list;
-      };
-      return getObj(arrs);
-    },
   },
 };
 </script>
@@ -407,7 +313,6 @@ export default {
 .custom-tree-container {
   width: 900px;
 }
-
 .custom-tree-container /deep/ .custom-tree-node {
   flex: 1;
   display: flex;
@@ -416,12 +321,10 @@ export default {
   font-size: 14px;
   padding-right: 8px;
 }
-
 .custom-tree-container /deep/ .el-tree-node__content {
   height: 52px;
   // padding:0 40px !important;
 }
-
 .custom-tree-container /deep/ .tree-relation-input {
   width: 80px;
   margin-right: 10px;
@@ -436,21 +339,18 @@ export default {
   color: #303133;
   transition: 0.3s;
 }
-
 .custom-tree-container /deep/ .group {
   border-left: 6px solid #199dff;
-  margin: 10px;
   padding: 10px;
 }
 
 .custom-tree-container /deep/ .condition {
   border-left: 6px solid #64ff08 !important;
-  margin: 10px;
   padding: 10px;
 }
 
 .custom-tree-container /deep/ .condition-comp {
-  //padding: 10px 0;
+  padding: 10px 0;
 }
 
 .custom-tree-container /deep/ .tree-blink {

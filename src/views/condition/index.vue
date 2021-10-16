@@ -4,7 +4,6 @@
       <el-col :span="6">
         <el-select
           placeholder="属性"
-          size="mini"
           :value="node.data.field"
           @change="changeLeftValue"
         >
@@ -21,7 +20,6 @@
       <el-col :span="4">
         <el-select
           placeholder="过滤条件"
-          size="mini"
           :value="node.data.operator"
           @change="(v) => $emit('updateConditionOperateValue', v)"
         >
@@ -48,7 +46,7 @@
 
 <script>
 import Right from "./right";
-import { operatorMap } from "../data.js";
+import { operatorMap } from "../ruleData.js";
 export default {
   name: "Condition",
   componentName: "Condition",
