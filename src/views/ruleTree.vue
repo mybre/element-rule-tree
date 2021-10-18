@@ -74,7 +74,7 @@
             </el-col>
           </el-row>
         </div>
-        <div style="margin:20px 0">{{ curSceneDescription }}</div>
+        <div style="margin: 20px 0">{{ curSceneDescription }}</div>
         <tree
           ref="tree"
           :data="data"
@@ -91,13 +91,13 @@
             slot-scope="{ node: nodeCur, data: dataCur }"
           >
             <span>type: {{ dataCur.type }}</span>
-            <span>label: {{ dataCur.label }}</span>
+            <!-- <span>label: {{ dataCur.label }}</span>
             <span>id: {{ dataCur.id }}</span>
             <span>pId: {{ dataCur.pId }}</span>
             <span>field: {{ dataCur.field }}</span>
             <span>value: {{ dataCur.value }}</span>
             <span>operator: {{ dataCur.operator }}</span>
-            <span>relation: {{ dataCur.relation }}</span>
+            <span>relation: {{ dataCur.relation }}</span> -->
             <span v-if="dataCur.type === 'group'">
               <el-button-group>
                 <el-button
