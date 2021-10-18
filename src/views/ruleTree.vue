@@ -1,10 +1,11 @@
 <template>
   <div>
-    <div class="custom-tree-container" :style="{width:`${800 + maxLevel * 50}px`}">
-      <div style="padding: 30px 0"></div>
-
+    <div
+      class="custom-tree-container"
+      :style="{ width: `${800 + maxLevel * 50}px` }"
+    >
       <div class="tree-card" style="padding: 16px">
-        <div style="margin-bottom: 30px">
+        <div>
           <el-row :gutter="20">
             <el-col :span="4">
               <el-select
@@ -73,7 +74,7 @@
             </el-col>
           </el-row>
         </div>
-
+        <div style="margin:20px 0">{{ curSceneDescription }}</div>
         <tree
           ref="tree"
           :data="data"
@@ -195,9 +196,9 @@ import condition from "../components/tree/condition";
 let id = 1000;
 import emitter from "element-ui/src/mixins/emitter";
 export default {
-  mixins:[emitter],
-  name:'ruleTree',
-  componentName:'ruleTree',
+  mixins: [emitter],
+  name: "ruleTree",
+  componentName: "ruleTree",
   data() {
     return {
       filterText: "",
@@ -208,7 +209,7 @@ export default {
       next_condition: [],
       data: [],
       limitLevel: "3",
-      maxLevel:0,
+      maxLevel: 0,
     };
   },
   components: {
@@ -232,11 +233,16 @@ export default {
     curSceneFields() {
       return this.sceneType ? this.sceneMap[this.sceneType].fields : {};
     },
+    curSceneDescription() {
+      if (this.sceneType && this.sceneMap[this.sceneType]) {
+        return this.sceneMap[this.sceneType].description;
+      } else {
+        return "";
+      }
+    },
   },
 
   methods: {
-
-
     // 递归遍历 查找深度
     getDepth() {
       var arr = this.data;
@@ -248,7 +254,7 @@ export default {
         }
         arr = [];
         for (var i = 0; i < temp.length; i++) {
-          if(temp[i].children) {
+          if (temp[i].children) {
             for (var j = 0; j < temp[i].children.length; j++) {
               arr.push(temp[i].children[j]);
             }

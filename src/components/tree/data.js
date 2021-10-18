@@ -193,10 +193,12 @@ export const _sceneMap = {
   },
   cust: {
     scene: "自定义场景", // 场景名称
-    fields: {}
+    fields: {},
+    description: "筛选出自定义数据",
   },
   studentClass: {
     scene: "学服场景", //场景名称
+    description: "筛选出学服场景",
     fields: {
       studentId: {
         tableName: "bd_BdStudentclass",
