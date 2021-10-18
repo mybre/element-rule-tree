@@ -1,5 +1,5 @@
 {
-  "name": "element-tree",
+  "name": "element-rule-tree",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -17,5 +17,7 @@
     "less": "^3.0.4",
     "less-loader": "^5.0.0",
     "vue-template-compiler": "^2.6.11"
-  }
+  },
+  "keywords": [],
+  "description": ""
 }
