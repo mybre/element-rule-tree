@@ -1,82 +1,79 @@
 <template>
-  <div
-      class="el-tree-node tree-card "
-      @click.stop="handleClick"
-      @contextmenu="($event) => this.handleContextMenu($event)"
-      v-show="node.visible"
-      :class="{
-      'is-expanded': expanded,
-      'is-current': node.isCurrent,
-      'is-hidden': !node.visible,
-      'is-focusable': !node.disabled,
-      'is-checked': !node.disabled && node.checked,
-      group: node.data.type === 'group',
-      condition: node.data.type === 'condition'
-    }"
-      role="treeitem"
-      tabindex="-1"
-      :aria-expanded="expanded"
-      :aria-disabled="node.disabled"
-      :aria-checked="node.checked"
-      :draggable="tree.draggable"
-      @dragstart.stop="handleDragStart"
-      @dragover.stop="handleDragOver"
-      @dragend.stop="handleDragEnd"
-      @drop.stop="handleDrop"
-      ref="node"
-  >
-    <div class="el-tree-node__content">
-      <span
-          v-if="node.data.type === 'group' && node.data.children.length > 0"
-          @click.stop="handleExpandIconClick"
-          :class="[
-          { 'is-leaf': node.isLeaf, expanded: !node.isLeaf && expanded },
-          'el-tree-node__expand-icon',
-          tree.iconClass ? tree.iconClass : 'el-icon-caret-right',
-        ]"
-      >
-      </span>
-      <el-checkbox
-          v-if="showCheckbox"
-          v-model="node.checked"
-          :indeterminate="node.indeterminate"
-          :disabled="!!node.disabled"
-          @click.native.stop
-          @change="handleCheckChange"
-      >
-      </el-checkbox>
-      <span
-          v-if="node.loading"
-          class="el-tree-node__loading-icon el-icon-loading"
-      >
-      </span>
-      <node-content :node="node"></node-content>
-    </div>
-    <el-collapse-transition>
-      <div
-          class="el-tree-node__children"
-          v-if="!renderAfterExpand || childNodeRendered"
-          v-show="expanded"
-          role="group"
-          :aria-expanded="expanded"
-      >
-        <el-tree-node
-            :render-content="renderContent"
-            v-for="child in node.childNodes"
-            :render-after-expand="renderAfterExpand"
-            :show-checkbox="showCheckbox"
-            :key="getNodeKey(child)"
-            :node="child"
-            @node-expand="handleChildNodeExpand"
-        >
-        </el-tree-node>
-        <div v-if="node.data.type === 'condition'">
-          <node-condition :node="node"/>
-        </div>
-        <node-relation :node="node"/>
-      </div>
-    </el-collapse-transition>
-  </div>
+	<div
+		class="el-tree-node tree-card "
+		@click.stop="handleClick"
+		@contextmenu="($event) => this.handleContextMenu($event)"
+		v-show="node.visible"
+		:class="{
+			'is-expanded': expanded,
+			'is-current': node.isCurrent,
+			'is-hidden': !node.visible,
+			'is-focusable': !node.disabled,
+			'is-checked': !node.disabled && node.checked,
+			group: node.data.type === 'group',
+			condition: node.data.type === 'condition',
+			'tree-blink': isBlink
+		}"
+		role="treeitem"
+		tabindex="-1"
+		:aria-expanded="expanded"
+		:aria-disabled="node.disabled"
+		:aria-checked="node.checked"
+		:draggable="tree.draggable"
+		@dragstart.stop="handleDragStart"
+		@dragover.stop="handleDragOver"
+		@dragend.stop="handleDragEnd"
+		@drop.stop="handleDrop"
+		ref="node"
+	>
+		<div class="el-tree-node__content" v-show="node.data.type === 'group'">
+			<span
+				v-show="false"
+				@click.stop="handleExpandIconClick"
+				:class="[
+					{ 'is-leaf': node.isLeaf, expanded: !node.isLeaf && expanded },
+					'el-tree-node__expand-icon',
+					tree.iconClass ? tree.iconClass : 'el-icon-caret-right',
+				]"
+			/>
+			<el-checkbox
+				v-if="showCheckbox"
+				v-model="node.checked"
+				:indeterminate="node.indeterminate"
+				:disabled="!!node.disabled"
+				@click.native.stop
+				@change="handleCheckChange"
+			/>
+			<span
+				v-if="node.loading"
+				class="el-tree-node__loading-icon el-icon-loading"
+			/>
+			<node-content :node="node" />
+		</div>
+		<el-collapse-transition>
+			<div
+				class="el-tree-node__children"
+				v-if="!renderAfterExpand || childNodeRendered"
+				v-show="expanded"
+				role="group"
+				:aria-expanded="expanded"
+			>
+				<el-tree-node
+					:render-content="renderContent"
+					v-for="child in node.childNodes"
+					:render-after-expand="renderAfterExpand"
+					:show-checkbox="showCheckbox"
+					:key="getNodeKey(child)"
+					:node="child"
+					@node-expand="handleChildNodeExpand"
+				/>
+				<div v-if="node.data.type === 'condition'">
+					<node-condition :node="node" />
+				</div>
+				<node-relation :node="node" />
+			</div>
+		</el-collapse-transition>
+	</div>
 </template>
 
 <script type="text/jsx">
@@ -136,7 +133,7 @@ export default {
         ) : tree.$scopedSlots.control ? (
             tree.$scopedSlots.control({node, data})
         ) : (
-            <span class="el-tree-node__label">{node.label}</span>
+            ""
         );
       },
     },
@@ -192,6 +189,7 @@ export default {
       childNodeRendered: false,
       oldChecked: null,
       oldIndeterminate: null,
+        isBlink:false
     };
   },
 
@@ -349,5 +347,15 @@ export default {
       });
     }
   },
+    mounted() {
+      // console.log(this.node.data, 'this.node.datathis.node.data')
+      if(this.node.data.isBlink){
+          this.isBlink = true;
+            setTimeout(()=>{
+                this.isBlink = false;
+            },2*1000)
+      }
+      // this.isBlink = false;
+    }
 };
 </script>

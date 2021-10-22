@@ -1,20 +1,19 @@
 <template>
-  <div>
-    <el-select
-      placeholder="条件值"
-      :value="value"
-      size="mini"
-      @change="(val) => $emit('updateConditionRightValue', val)"
-    >
-      <el-option
-        v-for="(val, key) in curRightOption.values"
-        :key="key"
-        :label="val"
-        :value="key"
-      >
-      </el-option>
-    </el-select>
-  </div>
+	<div>
+		<el-select
+			placeholder="条件值"
+			:value="value"
+			size="mini"
+			@change="(val) => $emit('updateConditionRightValue', val)"
+		>
+			<el-option
+				v-for="(val, key) in curRightOption.values"
+				:key="key"
+				:label="val"
+				:value="key"
+			/>
+		</el-select>
+	</div>
 </template>
 
 <script>

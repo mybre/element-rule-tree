@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import renderContent from "./views/ruleTree.vue";
+import renderContent from "./views/index.vue";
 export default {
   components: {
     renderContent,

@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <el-input v-model="value"  size="mini"/>
-  </div>
+	<div>
+		<el-input v-model="value" size="mini" />
+	</div>
 </template>
 
 <script>
